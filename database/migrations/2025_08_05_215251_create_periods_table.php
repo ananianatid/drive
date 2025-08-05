@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('periods', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->time('start_time');
+            $table->time('end_time');
+            $table->integer('duration')->nullable(); // en minutes
+            $table->text('description')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

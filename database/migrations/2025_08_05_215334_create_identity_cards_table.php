@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('identity_cards', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('student_id')->constrained()->onDelete('cascade');
+            $table->string('card_number')->unique();
+            $table->date('issue_date');
+            $table->date('expiry_date')->nullable();
+            $table->enum('status', ['active', 'expired', 'suspended', 'lost', 'replaced'])->default('active');
+            $table->enum('card_type', ['student', 'temporary', 'permanent'])->default('student');
+            $table->string('photo_path')->nullable();
+            $table->string('signature_path')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

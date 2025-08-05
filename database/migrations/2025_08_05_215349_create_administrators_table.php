@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('administrators', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('employee_number')->unique();
+            $table->string('department')->nullable();
+            $table->string('position')->nullable();
+            $table->date('hire_date');
+            $table->enum('status', ['active', 'inactive', 'suspended', 'retired'])->default('active');
+            $table->integer('access_level')->default(25);
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

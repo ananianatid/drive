@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('results', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('student_id')->constrained()->onDelete('cascade');
+            $table->foreignId('exam_id')->constrained()->onDelete('cascade');
+            $table->decimal('score', 5, 2);
+            $table->decimal('max_score', 5, 2);
+            $table->decimal('percentage', 5, 2);
+            $table->enum('status', ['passed', 'failed', 'pending', 'incomplete'])->default('pending');
+            $table->date('exam_date');
+            $table->text('notes')->nullable();
+            $table->text('feedback')->nullable();
             $table->timestamps();
         });
     }

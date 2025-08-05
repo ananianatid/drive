@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('academic_classes', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->date('start_date');
+            $table->date('end_date')->nullable();
+            $table->integer('capacity')->default(20);
+            $table->enum('status', ['active', 'inactive', 'completed', 'suspended'])->default('active');
+            $table->foreignId('teacher_id')->nullable()->constrained('teachers')->onDelete('set null');
             $table->timestamps();
         });
     }
