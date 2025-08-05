@@ -44,7 +44,13 @@ class AcademicClassResource extends Resource
                             ->maxLength(1000),
                         Forms\Components\Select::make('teacher_id')
                             ->label('Instructeur')
-                            ->relationship('teacher', 'user.name')
+                            ->options(function () {
+                                return \App\Models\Teacher::with('user')
+                                    ->get()
+                                    ->mapWithKeys(function ($teacher) {
+                                        return [$teacher->id => $teacher->user->name ?? 'N/A'];
+                                    });
+                            })
                             ->searchable()
                             ->preload(),
                     ])->columns(2),
@@ -89,10 +95,6 @@ class AcademicClassResource extends Resource
                     ->label('Nom')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('teacher.user.name')
-                    ->label('Instructeur')
-                    ->searchable()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('start_date')
                     ->label('Date de début')
                     ->date()
@@ -132,9 +134,6 @@ class AcademicClassResource extends Resource
                         'completed' => 'Terminée',
                         'suspended' => 'Suspendue',
                     ]),
-                Tables\Filters\SelectFilter::make('teacher_id')
-                    ->label('Instructeur')
-                    ->relationship('teacher', 'user.name'),
                 Tables\Filters\Filter::make('start_date')
                     ->label('Date de début')
                     ->form([
@@ -158,10 +157,6 @@ class AcademicClassResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('students')
-                    ->label('Voir les étudiants')
-                    ->icon('heroicon-o-users')
-                    ->url(fn (AcademicClass $record): string => route('filament.admin.resources.academic-classes.edit', ['record' => $record, 'activeTab' => 'students'])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -174,8 +169,8 @@ class AcademicClassResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\StudentsRelationManager::class,
-            RelationManagers\CoursesRelationManager::class,
+            // RelationManagers\StudentsRelationManager::class,
+            // RelationManagers\CoursesRelationManager::class,
         ];
     }
 
