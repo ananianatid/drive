@@ -326,8 +326,6 @@ class AutoEcoleSeeder extends Seeder
                     'course_id' => $course->id,
                     'date' => $course->date,
                     'status' => ['present', 'absent', 'late'][rand(0, 2)],
-                    'arrival_time' => $course->start_time,
-                    'departure_time' => $course->end_time,
                     'notes' => 'Présence enregistrée',
                 ]);
             }

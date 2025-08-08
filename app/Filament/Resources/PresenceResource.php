@@ -53,7 +53,13 @@ class PresenceResource extends Resource
                             })
                             ->searchable()
                             ->preload()
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                $course = \App\Models\Course::find($state);
+                                $set('date', optional($course)->date);
+                            })
                             ->required(),
+                        Forms\Components\Hidden::make('date'),
                     ])->columns(2),
 
                 Section::make('Présence')
@@ -68,11 +74,6 @@ class PresenceResource extends Resource
                             ])
                             ->default('present')
                             ->required(),
-                        Forms\Components\DateTimePicker::make('arrival_time')
-                            ->label('Heure d\'arrivée'),
-                        Forms\Components\DateTimePicker::make('departure_time')
-                            ->label('Heure de départ')
-                            ->after('arrival_time'),
                         Forms\Components\TextInput::make('duration')
                             ->label('Durée (minutes)')
                             ->numeric()
@@ -109,14 +110,6 @@ class PresenceResource extends Resource
                 Tables\Columns\TextColumn::make('course.date')
                     ->label('Date du cours')
                     ->date()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('arrival_time')
-                    ->label('Arrivée')
-                    ->time()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('departure_time')
-                    ->label('Départ')
-                    ->time()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('duration')
                     ->label('Durée')

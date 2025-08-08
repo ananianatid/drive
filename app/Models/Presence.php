@@ -15,15 +15,11 @@ class Presence extends Model
         'course_id',
         'date',
         'status',
-        'arrival_time',
-        'departure_time',
         'notes',
     ];
 
     protected $casts = [
         'date' => 'date',
-        'arrival_time' => 'datetime',
-        'departure_time' => 'datetime',
     ];
 
     /**
@@ -71,11 +67,19 @@ class Presence extends Model
      */
     public function getDurationInMinutesAttribute(): int
     {
-        if (!$this->arrival_time || !$this->departure_time) {
-            return 0;
-        }
+        return 0;
+    }
 
-        return $this->arrival_time->diffInMinutes($this->departure_time);
+    protected static function booted(): void
+    {
+        static::saving(function (Presence $presence) {
+            if (empty($presence->date) && $presence->course_id) {
+                $course = \App\Models\Course::find($presence->course_id);
+                if ($course) {
+                    $presence->date = $course->date;
+                }
+            }
+        });
     }
 
     /**
